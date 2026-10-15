@@ -8,6 +8,7 @@ export class Pokemon {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:3000/api/pokemon';
 
+//Reactive state management using signals
   pokemonList = signal<any[]>([]);
 
   fetchPokemon(){
@@ -16,5 +17,14 @@ export class Pokemon {
 
   savePokemon(data: any){
     return this.http.post(this.apiUrl, data);
+  }
+
+  deletePokemon(id: string){
+    return this.http.delete(`${this.apiUrl}/${id}`).subscribe(() => this.pokemonList.update(list => list.filter(p => p._id !== id)));
+    //removing the item immediately from our local signal
+  }
+
+  updatePokemon(id: string, data: any){
+    return this.http.put(`${this.apiUrl}/${id}`, data);
   }
 }
